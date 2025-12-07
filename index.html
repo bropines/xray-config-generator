@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xray Routing Editor</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<header class="header">
+    <div class="header-content">
+        <h1>
+            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" style="color: var(--primary)">
+                <path d="M2 12h20"></path><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-6"></path><path d="M12 2 2 12h20L12 2z"></path>
+            </svg>
+            Xray Config Editor
+        </h1>
+        <div class="file-controls">
+            <!-- Config Loader -->
+            <label class="file-btn">
+                <span class="btn">
+                    <span id="statusConfig" class="status-dot"></span> Config.json
+                </span>
+                <input type="file" id="fileConfig" accept=".json">
+            </label>
+
+            <!-- GeoSite Loader -->
+            <label class="file-btn">
+                <span class="btn">
+                    <span id="statusGeoSite" class="status-dot"></span> GeoSite.dat
+                </span>
+                <input type="file" id="fileGeoSite">
+            </label>
+
+            <!-- GeoIP Loader -->
+            <label class="file-btn">
+                <span class="btn">
+                    <span id="statusGeoIP" class="status-dot"></span> GeoIP.dat
+                </span>
+                <input type="file" id="fileGeoIP">
+            </label>
+
+            <button id="themeToggle" class="btn" title="Toggle Theme">
+                Theme
+            </button>
+            
+            <button id="saveConfigBtn" class="btn btn-primary">
+                Save / Export JSON
+            </button>
+        </div>
+    </div>
+</header>
+
+<div class="main-editor">
+    <!-- SIDEBAR: RULES LIST -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <strong>Routing Rules</strong>
+            <button id="addRuleBtn" class="icon-btn" title="Add New Rule">
+                <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            </button>
+        </div>
+        <div id="rulesListContainer" class="rules-list">
+            <div style="padding: 1rem; text-align: center; color: var(--text-light);">
+                Load a config.json to start editing.
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN: RULE EDITOR -->
+    <div class="editor-panel">
+        <div id="emptyState" class="empty-state">
+            <svg viewBox="0 0 24 24" width="64" height="64" stroke="var(--border)" stroke-width="1" fill="none" style="margin-bottom: 1rem;">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line>
+            </svg>
+            <h2>Select a rule to edit</h2>
+            <p>Or create a new one from the sidebar.</p>
+        </div>
+
+        <div id="editorForm" class="hidden" style="display: flex; flex-direction: column; gap: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h2 style="margin: 0;">Edit Rule #<span id="ruleIndexDisplay"></span></h2>
+                <button id="deleteRuleBtn" class="btn" style="color: var(--danger); border-color: var(--danger);">Delete Rule</button>
+            </div>
+
+            <!-- SMART INPUT: Domains, IPs, GeoSites -->
+            <div class="form-group">
+                <label>Targets (Domains, IPs, GeoSites)</label>
+                <div class="tag-input-container" id="smartTagInput">
+                    <!-- Chips will go here -->
+                    <input type="text" class="tag-input-field" id="smartInput" placeholder="Type domain, IP, or geosite:category..." autocomplete="off">
+                    <!-- Autocomplete Dropdown -->
+                    <div id="autocompleteList" class="autocomplete-dropdown hidden"></div>
+                </div>
+                <p class="helper-text">Type and press Enter. Supports <code>geosite:</code>, <code>geoip:</code>, IPs, CIDRs, domains, and regex.</p>
+            </div>
+
+            <!-- OUTBOUND TAG -->
+            <div class="form-group">
+                <label>Outbound Tag</label>
+                <input type="text" id="ruleOutbound" class="tag-input-field" style="border: 1px solid var(--border); border-radius: 0.375rem; padding: 0.5rem; width: 100%;" placeholder="e.g. warp, direct, blocked">
+                <div id="outboundSuggestions" class="outbound-cloud">
+                    <!-- Outbound chips generated from config -->
+                </div>
+            </div>
+
+            <!-- EXTRA FIELDS (Optional) -->
+            <div class="form-group">
+                <label>Protocol (Optional)</label>
+                <div class="tag-input-container" id="protocolTagInput">
+                    <input type="text" class="tag-input-field" id="protocolInput" placeholder="http, tls, bittorrent...">
+                </div>
+            </div>
+            
+            <button id="applyRuleBtn" class="btn btn-primary" style="align-self: flex-start; margin-top: 1rem;">Apply Changes to Config</button>
+        </div>
+    </div>
+</div>
+
+<script src="js/app.js"></script>
+<script src="https://unpkg.com/protobufjs/dist/protobuf.min.js"></script>
+</body>
+</html>
